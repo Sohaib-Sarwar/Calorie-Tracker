@@ -1,0 +1,7 @@
+Django>=3.2.0,<4.0.0
+django-bootstrap4>=2.3.1
+Pillow>=8.2.0  # For image handling
+django-crispy-forms>=1.14.0  # For better form styling
+whitenoise>=6.2.0  # For serving static files
+django-filter>=22.1  # For enhanced filtering capabilities
+python-dateutil>=2.8.2  # For date handling
