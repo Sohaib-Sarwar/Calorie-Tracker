@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete {{ entry.food_name }} - Calorie Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card" data-aos="fade-up">
+            <div class="card-header bg-danger text-white">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirm Deletion</h3>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <span class="fa-stack fa-3x">
+                        <i class="fas fa-circle fa-stack-2x text-danger"></i>
+                        <i class="fas fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-circle"></i> Are you sure you want to delete the following food entry? This action cannot be undone.
+                </div>
+                
+                <div class="p-3 mb-4 bg-light rounded">
+                    <ul class="list-group mb-4">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong><i class="fas fa-utensils text-primary mr-2"></i> Food:</strong>
+                            <span>{{ entry.food_name }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong><i class="fas fa-fire text-danger mr-2"></i> Calories:</strong>
+                            <span>{{ entry.calories }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <strong><i class="fas fa-calendar-day text-info mr-2"></i> Date:</strong>
+                            <span>{{ entry.date_consumed }}</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-trash"></i> Confirm Delete
+                        </button>
+                        <a href="{% url 'entry-list' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

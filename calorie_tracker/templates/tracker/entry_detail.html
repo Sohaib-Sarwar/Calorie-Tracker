@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ entry.food_name }} - Calorie Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card" data-aos="fade-up">
+            <div class="card-header bg-primary text-white">
+                <h3><i class="fas fa-utensils"></i> Food Entry Details</h3>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <span class="fa-stack fa-3x">
+                        <i class="fas fa-circle fa-stack-2x text-success"></i>
+                        <i class="fas fa-apple-alt fa-stack-1x fa-inverse"></i>
+                    </span>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="detail-item">
+                            <h5 class="text-muted"><i class="fas fa-tag"></i> Food Name</h5>
+                            <h3 class="font-weight-bold">{{ entry.food_name }}</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="detail-item">
+                            <h5 class="text-muted"><i class="fas fa-fire"></i> Calories</h5>
+                            <h3 class="font-weight-bold">{{ entry.calories }}</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-item mb-4">
+                    <h5 class="text-muted"><i class="fas fa-calendar-alt"></i> Date Consumed</h5>
+                    <h3 class="font-weight-bold">{{ entry.date_consumed }}</h3>
+                </div>
+                
+                <div class="text-center">
+                    <div class="progress mb-4" style="height: 20px;">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                             style="width: {{ entry.calories|divisibleby:20 }}%;" 
+                             aria-valuenow="{{ entry.calories }}" aria-valuemin="0" aria-valuemax="2000">
+                            {{ entry.calories }} calories
+                        </div>
+                    </div>
+                    <p class="text-muted">This entry represents approximately {{ entry.calories|divisibleby:20 }}% of a 2,000 calorie daily intake.</p>
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <a href="{% url 'entry-update' entry.pk %}" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a href="{% url 'entry-delete' entry.pk %}" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Delete
+                    </a>
+                    <a href="{% url 'entry-list' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="card-header bg-info text-white">
+                <h5><i class="fas fa-info-circle"></i> Nutrition Facts</h5>
+            </div>
+            <div class="card-body">
+                <p>Understanding your caloric intake is crucial for maintaining a healthy diet. Foods with similar calorie counts to {{ entry.food_name }} include:</p>
+                
+                <div class="row text-center">
+                    {% if entry.calories < 100 %}
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-apple-alt fa-2x text-danger"></i>
+                            <p>Medium Apple (95 cal)</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-egg fa-2x text-warning"></i>
+                            <p>Boiled Egg (78 cal)</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-carrot fa-2x text-orange"></i>
+                            <p>2 Medium Carrots (50 cal)</p>
+                        </div>
+                    {% elif entry.calories < 300 %}
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-bread-slice fa-2x text-warning"></i>
+                            <p>Slice of Toast with Avocado (230 cal)</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-glass-whiskey fa-2x text-info"></i>
+                            <p>Greek Yogurt with Honey (220 cal)</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-mug-hot fa-2x text-brown"></i>
+                            <p>Small Latte with Whole Milk (180 cal)</p>
+                        </div>
+                    {% elif entry.calories < 600 %}
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-hamburger fa-2x text-danger"></i>
+                            <p>Small Hamburger (500 cal)</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-drumstick-bite fa-2x text-warning"></i>
+                            <p>Chicken Sandwich (450 cal)</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-fish fa-2x text-info"></i>
+                            <p>Salmon Fillet with Vegetables (400 cal)</p>
+                        </div>
+                    {% else %}
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-pizza-slice fa-2x text-danger"></i>
+                            <p>3 Slices of Pizza (750 cal)</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-utensils fa-2x text-success"></i>
+                            <p>Full Restaurant Meal (800-1200 cal)</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-ice-cream fa-2x text-info"></i>
+                            <p>Large Milkshake (650 cal)</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

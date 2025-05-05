@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Calorie Tracker{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-transparent animate-on-load" data-aos="fade-up">
+    <h1 class="display-4"><i class="fas fa-seedling text-success"></i> Welcome to Calorie Tracker</h1>
+    <p class="lead">Track your daily nutrition intake with our beautiful, easy-to-use platform.</p>
+    <hr class="my-4">
+    <p>Monitor your food consumption, set goals, and maintain a healthier lifestyle.</p>
+    <div class="mt-4">
+        <a class="btn btn-primary btn-lg mr-2" href="{% url 'entry-create' %}" role="button">
+            <i class="fas fa-plus-circle"></i> Add New Entry
+        </a>
+        <a class="btn btn-outline-primary btn-lg" href="{% url 'entry-list' %}" role="button">
+            <i class="fas fa-list"></i> View All Entries
+        </a>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="card nutrition-card text-center">
+            <div class="card-body">
+                <i class="fas fa-utensils nutrition-icon"></i>
+                <h5 class="card-title">Track Food</h5>
+                <p class="card-text">Record your meals and keep a detailed log of your daily food intake.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="card nutrition-card text-center">
+            <div class="card-body">
+                <i class="fas fa-chart-line nutrition-icon"></i>
+                <h5 class="card-title">Monitor Progress</h5>
+                <p class="card-text">View trends and patterns in your calorie consumption over time.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="card nutrition-card text-center">
+            <div class="card-body">
+                <i class="fas fa-heartbeat nutrition-icon"></i>
+                <h5 class="card-title">Stay Healthy</h5>
+                <p class="card-text">Make informed decisions about your diet for better health outcomes.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-7" data-aos="fade-right">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4><i class="fas fa-calendar-day"></i> Today's Summary (<span class="date-display">{{ today }}</span>)</h4>
+            </div>
+            <div class="card-body">
+                <!-- Hidden data element for JavaScript to read -->
+                <div id="actual-total-calories" data-calories="{{ total_calories|default:0 }}" class="d-none"></div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6 stat-card text-center">
+                        <div class="stat-value" data-toggle="tooltip" title="Total calories consumed today">
+                            {{ total_calories|default:0 }}
+                        </div>
+                        <div class="stat-label">CALORIES</div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: {{ total_calories|default:0|divisibleby:20 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 stat-card text-center">
+                        <div class="stat-value" data-toggle="tooltip" title="Number of food entries today">
+                            {{ today_entries|length }}
+                        </div>
+                        <div class="stat-label">ENTRIES</div>
+                    </div>
+                </div>
+                
+                <div class="today-summary">
+                    <h5 class="mb-2"><i class="fas fa-utensils mr-2"></i>Today's Food</h5>
+                    {% if today_entries %}
+                        <ul class="list-group">
+                            {% for entry in today_entries %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <i class="fas fa-drumstick-bite text-secondary mr-2"></i>
+                                        {{ entry.food_name }}
+                                    </span>
+                                    <span class="badge badge-primary badge-pill">{{ entry.calories }} cal</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> No food entries for today. 
+                            <a href="{% url 'entry-create' %}" class="alert-link">Add one now!</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-5" data-aos="fade-left">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4><i class="fas fa-chart-bar"></i> Calorie History</h4>
+            </div>
+            <div class="card-body">
+                {% if daily_summary %}
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="calorieChart" 
+                                data-labels="{% for day in daily_summary|dictsortreversed:'date_consumed'|slice:':7'|dictsort:'date_consumed' %}{{ day.date_consumed }}{% if not forloop.last %},{% endif %}{% endfor %}" 
+                                data-values="{% for day in daily_summary|dictsortreversed:'date_consumed'|slice:':7'|dictsort:'date_consumed' %}{{ day.total }}{% if not forloop.last %},{% endif %}{% endfor %}">
+                        </canvas>
+                    </div>
+                    <div class="mt-3">
+                        <h5 class="text-center">Recent Daily Totals</h5>
+                        <ul class="list-group">
+                            {% for day in daily_summary|slice:":5" %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <i class="far fa-calendar-alt text-info mr-2"></i>
+                                        <span class="date-display">{{ day.date_consumed }}</span>
+                                    </span>
+                                    <span class="badge badge-info badge-pill">{{ day.total }} cal</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> No entries found. 
+                        <a href="{% url 'entry-create' %}" class="alert-link">Add one now!</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4" data-aos="fade-up">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4><i class="fas fa-lightbulb"></i> Nutrition Tips</h4>
+            </div>
+            <div class="card-body">
+                <div id="nutritionTips" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="d-flex">
+                                <div class="mr-4">
+                                    <i class="fas fa-apple-alt fa-3x text-danger"></i>
+                                </div>
+                                <div>
+                                    <h5>Eat a Rainbow</h5>
+                                    <p>Include fruits and vegetables of different colors in your diet to ensure you're getting a wide variety of nutrients.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="d-flex">
+                                <div class="mr-4">
+                                    <i class="fas fa-glass-water fa-3x text-info"></i>
+                                </div>
+                                <div>
+                                    <h5>Stay Hydrated</h5>
+                                    <p>Drink at least 8 glasses of water each day to maintain proper hydration and support bodily functions.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="d-flex">
+                                <div class="mr-4">
+                                    <i class="fas fa-cookie-bite fa-3x text-warning"></i>
+                                </div>
+                                <div>
+                                    <h5>Mindful Snacking</h5>
+                                    <p>Choose nutritious snacks like nuts, fruits, or yogurt instead of processed foods high in sugar and unhealthy fats.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="carousel-control-prev" href="#nutritionTips" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#nutritionTips" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('calorieChart');
+        
+        if (ctx) {
+            // Get data from data attributes and parse it
+            let labelsStr = ctx.getAttribute('data-labels');
+            let valuesStr = ctx.getAttribute('data-values');
+            
+            if (labelsStr && valuesStr) {
+                let labels = labelsStr.split(',');
+                let values = valuesStr.split(',').map(val => parseInt(val, 10) || 0);
+                
+                // Add total calories to window for global access
+                window.total_calories = {{ total_calories|default:0 }};
+                
+                // Get current theme
+                const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+                const textColor = isDarkMode ? '#ECEFF1' : '#263238';
+                const gridColor = isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                
+                // Create chart
+                window.calorieChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Calories Consumed',
+                            data: values,
+                            backgroundColor: isDarkMode ? 'rgba(129, 199, 132, 0.2)' : 'rgba(76, 175, 80, 0.2)',
+                            borderColor: isDarkMode ? '#81C784' : '#4CAF50',
+                            borderWidth: 2,
+                            pointBackgroundColor: isDarkMode ? '#66BB6A' : '#388E3C',
+                            pointBorderColor: isDarkMode ? '#263238' : '#fff',
+                            pointHoverBackgroundColor: isDarkMode ? '#263238' : '#fff',
+                            pointHoverBorderColor: isDarkMode ? '#81C784' : '#4CAF50',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: gridColor
+                                },
+                                ticks: {
+                                    color: textColor
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: textColor
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    color: textColor,
+                                    font: {
+                                        family: "'Quicksand', sans-serif",
+                                        weight: 'bold'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: isDarkMode ? 'rgba(30, 30, 30, 0.8)' : 'rgba(255, 255, 255, 0.8)',
+                                titleColor: isDarkMode ? '#ECEFF1' : '#263238',
+                                bodyColor: isDarkMode ? '#ECEFF1' : '#263238',
+                                bodyFont: {
+                                    family: "'Quicksand', sans-serif"
+                                },
+                                titleFont: {
+                                    family: "'Comfortaa', cursive"
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Call updateGoalDisplay to set the correct values based on today's intake
+                if (typeof updateGoalDisplay === 'function') {
+                    updateGoalDisplay();
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

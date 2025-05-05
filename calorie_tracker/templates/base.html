@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Calorie Tracker{% endblock %}</title>
+    
+    <!-- Google Fonts - More Unique Selection -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Comfortaa:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- AOS Animation Library -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    
+    <!-- Custom CSS for our vibrant health-focused design -->
+    <style>
+        :root {
+            /* Vibrant Health-Focused Color Palette */
+            --primary-color: #4CAF50;
+            --primary-light: #7BC67E;
+            --primary-dark: #2E7D32;
+            --secondary-color: #FF5722;
+            --accent-color: #42A5F5;
+            --success-color: #66BB6A;
+            --warning-color: #FFA726;
+            --danger-color: #EF5350;
+            --text-color: #263238;
+            --text-muted: #607D8B;
+            --bg-color: #F5F7FA;
+            --card-bg: #FFFFFF;
+            --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            
+            /* Custom Fonts */
+            --header-font: 'Comfortaa', cursive;
+            --body-font: 'Quicksand', sans-serif;
+            --accent-font: 'Poppins', sans-serif;
+            
+            /* Animation Speed */
+            --transition-speed: 0.3s;
+            
+            /* Badge colors */
+            --badge-bg: #4CAF50;
+            --badge-text: #FFFFFF;
+            
+            /* Date picker & Form control colors */
+            --input-bg: #FFFFFF;
+            --input-text: #263238;
+            --input-border: #E0E0E0;
+            
+            /* Summary sections colors */
+            --summary-bg: rgba(76, 175, 80, 0.1);
+            --stat-value-color: #2E7D32;
+            --stat-label-color: #607D8B;
+            
+            /* Distribution card specific colors */
+            --distribution-bg: #F1F8E9;
+            --distribution-text: #2E7D32;
+            --distribution-border: #C5E1A5;
+            
+            /* Table colors for entries page */
+            --table-header-bg: #4CAF50;
+            --table-header-text: #FFFFFF;
+            --table-row-hover: rgba(76, 175, 80, 0.1);
+            --table-border: #E0E0E0;
+            
+            /* Filter form colors */
+            --filter-bg: #F5F5F5;
+            --filter-border: #E0E0E0;
+            
+            /* Form button colors */
+            --btn-toggle-active: #4CAF50;
+            --btn-toggle-active-text: #FFFFFF;
+            --btn-toggle-border: #4CAF50;
+            --btn-toggle-text: #4CAF50;
+        }
+        
+        /* Dark Mode Colors */
+        [data-theme="dark"] {
+            --primary-color: #66BB6A;
+            --primary-light: #8BC34A;
+            --primary-dark: #388E3C;
+            --secondary-color: #FF7043;
+            --accent-color: #64B5F6;
+            --success-color: #81C784;
+            --warning-color: #FFB74D;
+            --danger-color: #E57373;
+            --text-color: #ECEFF1;
+            --text-muted: #B0BEC5;
+            --bg-color: #121212;
+            --card-bg: #1E1E1E;
+            --card-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            
+            /* Badge colors for dark mode */
+            --badge-bg: #66BB6A;
+            --badge-text: #121212;
+            
+            /* Date picker & Form control colors for dark mode */
+            --input-bg: #2C2C2C;
+            --input-text: #ECEFF1;
+            --input-border: #424242;
+            
+            /* Summary sections colors for dark mode */
+            --summary-bg: rgba(102, 187, 106, 0.15);
+            --stat-value-color: #81C784;
+            --stat-label-color: #B0BEC5;
+            
+            /* Distribution card specific colors for dark mode */
+            --distribution-bg: rgba(102, 187, 106, 0.15);
+            --distribution-text: #81C784;
+            --distribution-border: #388E3C;
+            
+            /* Table colors for entries page in dark mode */
+            --table-header-bg: #388E3C;
+            --table-header-text: #FFFFFF;
+            --table-row-hover: rgba(129, 199, 132, 0.2);
+            --table-border: #424242;
+            
+            /* Filter form colors in dark mode */
+            --filter-bg: #2C2C2C;
+            --filter-border: #424242;
+            
+            /* Form button colors in dark mode */
+            --btn-toggle-active: #66BB6A;
+            --btn-toggle-active-text: #121212;
+            --btn-toggle-border: #66BB6A;
+            --btn-toggle-text: #81C784;
+        }
+        
+        body {
+            font-family: var(--body-font);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+        
+        h1, h2, h3 {
+            font-family: var(--header-font);
+            font-weight: 700;
+        }
+        
+        h4, h5, h6 {
+            font-family: var(--accent-font);
+            font-weight: 600;
+        }
+        
+        .btn {
+            font-family: var(--accent-font);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0.8rem 1rem;
+        }
+        
+        .navbar-brand {
+            font-family: var(--header-font);
+            font-weight: 700;
+            font-size: 1.6rem;
+            letter-spacing: 1px;
+        }
+        
+        .navbar-brand i {
+            margin-right: 8px;
+            color: #FFC107;
+        }
+        
+        .nav-link {
+            font-family: var(--accent-font);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            position: relative;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #FFC107;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover:after {
+            width: 100%;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            border: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color var(--transition-speed);
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border-bottom: none;
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+        }
+        
+        .card-header.bg-success {
+            background: linear-gradient(135deg, #66BB6A, #388E3C);
+        }
+        
+        .card-header.bg-info {
+            background: linear-gradient(135deg, #42A5F5, #1976D2);
+        }
+        
+        .card-header.bg-danger {
+            background: linear-gradient(135deg, #EF5350, #C62828);
+        }
+        
+        .card-header.bg-warning {
+            background: linear-gradient(135deg, #FFA726, #F57C00);
+        }
+        
+        .card-header.bg-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        /* Form Controls */
+        .form-control {
+            border-radius: 10px;
+            padding: 0.6rem 1rem;
+            border: 2px solid #E0E0E0;
+            font-family: var(--body-font);
+            transition: all 0.3s ease;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+        }
+        
+        /* Theme Switch Styles */
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        
+        .theme-switch {
+            display: inline-block;
+            height: 26px;
+            position: relative;
+            width: 50px;
+        }
+        
+        .theme-switch input {
+            display: none;
+        }
+        
+        .slider {
+            background-color: #ccc;
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            background-color: white;
+            bottom: 4px;
+            content: "";
+            height: 18px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 18px;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        
+        footer {
+            background: linear-gradient(135deg, #263238, #37474F);
+        }
+        
+        /* Goal Progress */
+        .goal-progress {
+            height: 10px;
+            border-radius: 5px;
+            background-color: rgba(0,0,0,0.1);
+            margin: 8px 0;
+            overflow: hidden;
+        }
+        
+        .goal-bar {
+            height: 100%;
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            transition: width 1s ease-in-out;
+        }
+        
+        /* Alert for nutritional suggestions */
+        .nutrition-alert {
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-color);
+            background-color: rgba(76, 175, 80, 0.1);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .nutrition-alert.warning {
+            border-left-color: var(--warning-color);
+            background-color: rgba(255, 167, 38, 0.1);
+        }
+        
+        .nutrition-alert.danger {
+            border-left-color: var(--danger-color);
+            background-color: rgba(239, 83, 80, 0.1);
+        }
+        
+        /* Animation Effects */
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        .slide-up {
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        /* Form inputs in dark mode */
+        [data-theme="dark"] input[type="date"],
+        [data-theme="dark"] input[type="text"],
+        [data-theme="dark"] input[type="number"],
+        [data-theme="dark"] select,
+        [data-theme="dark"] textarea {
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            border-color: var(--input-border);
+        }
+        
+        /* Badge styling that respects theme */
+        .badge-primary {
+            background-color: var(--badge-bg);
+            color: var(--badge-text);
+        }
+        
+        /* Stat card values and labels */
+        .stat-value {
+            color: var(--stat-value-color);
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-family: var(--header-font);
+            transition: color var(--transition-speed);
+        }
+        
+        .stat-label {
+            color: var(--stat-label-color);
+            font-family: var(--accent-font);
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: color var(--transition-speed);
+        }
+        
+        /* Dark mode fixes for the goal progress card */
+        [data-theme="dark"] .goal-progress {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Dark mode fixes for date representations */
+        [data-theme="dark"] .date-display {
+            color: var(--text-color);
+        }
+        
+        /* Today's summary card specific styling */
+        .today-summary {
+            background-color: var(--summary-bg);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 15px;
+            transition: background-color var(--transition-speed);
+        }
+        
+        /* List group items in dark mode */
+        [data-theme="dark"] .list-group-item {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Fix for charts in dark mode */
+        [data-theme="dark"] canvas {
+            filter: brightness(0.95);
+        }
+        
+        /* Dark mode fixes for buttons in toggle groups (Set Goals page) */
+        [data-theme="dark"] .btn-outline-primary {
+            color: var(--primary-light);
+            border-color: var(--primary-light);
+        }
+        
+        [data-theme="dark"] .btn-outline-primary:hover,
+        [data-theme="dark"] .btn-outline-primary:focus,
+        [data-theme="dark"] .btn-outline-primary.active {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            color: #fff;
+        }
+        
+        /* Food distribution card fixes */
+        .distribution-card {
+            text-align: center;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .distribution-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        [data-theme="dark"] .distribution-icon {
+            color: var(--primary-light);
+        }
+        
+        /* Modal style fixes for dark mode */
+        [data-theme="dark"] .modal-content {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+        
+        [data-theme="dark"] .modal-header,
+        [data-theme="dark"] .modal-footer {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="dark"] .close {
+            color: var(--text-color);
+            text-shadow: none;
+        }
+        
+        [data-theme="dark"] .text-muted {
+            color: var(--text-muted) !important;
+        }
+        
+        /* Entries list page specific fixes */
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        [data-theme="dark"] .table {
+            color: var(--text-color);
+        }
+        
+        [data-theme="dark"] .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        [data-theme="dark"] .table-hover tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        [data-theme="dark"] .table th,
+        [data-theme="dark"] .table td {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Filter forms in dark mode */
+        .filter-form {
+            padding: 15px;
+            border-radius: 10px;
+            background-color: var(--card-bg);
+            margin-bottom: 20px;
+            transition: background-color var(--transition-speed);
+        }
+        
+        /* Badge colors for info and secondary */
+        .badge-info {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        [data-theme="dark"] .badge-info {
+            background-color: var(--accent-color);
+            color: var (--card-bg);
+        }
+        
+        .badge-secondary {
+            background-color: var(--text-muted);
+            color: white;
+        }
+        
+        [data-theme="dark"] .badge-secondary {
+            background-color: var(--text-muted);
+            color: var(--card-bg);
+        }
+        
+        /* Alert messages in dark mode */
+        [data-theme="dark"] .alert-info,
+        [data-theme="dark"] .alert-warning {
+            background-color: rgba(100, 181, 246, 0.1);
+            color: var(--text-color);
+            border-color: rgba(100, 181, 246, 0.2);
+        }
+        
+        [data-theme="dark"] .alert-info .alert-link,
+        [data-theme="dark"] .alert-warning .alert-link {
+            color: var(--primary-light);
+        }
+        
+        /* Table improvements for dark mode */
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: var(--table-row-hover);
+        }
+        
+        .table thead th {
+            background-color: var(--table-header-bg);
+            color: var(--table-header-text);
+            border-color: var(--table-border);
+            vertical-align: middle;
+        }
+        
+        [data-theme="dark"] .table {
+            color: var(--text-color);
+            border-color: var(--table-border);
+        }
+        
+        [data-theme="dark"] .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        [data-theme="dark"] .table td,
+        [data-theme="dark"] .table th {
+            border-color: var(--table-border);
+        }
+        
+        /* Food distribution card improvements */
+        .food-distribution-card {
+            border: 1px solid var(--distribution-border);
+            background-color: var(--distribution-bg);
+            color: var(--distribution-text);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .food-distribution-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .distribution-stat {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-family: var(--header-font);
+            margin-bottom: 5px;
+        }
+        
+        [data-theme="dark"] .distribution-stat {
+            color: var(--primary-light);
+        }
+        
+        .distribution-label {
+            font-weight: 600;
+            font-family: var(--accent-font);
+            color: var(--distribution-text);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+        
+        /* Filter form improvements */
+        .filter-form {
+            background-color: var(--filter-bg);
+            border: 1px solid var(--filter-border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        /* Set Goals page improvements */
+        .btn-group-toggle .btn {
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-primary {
+            color: var(--btn-toggle-text);
+            border-color: var(--btn-toggle-border);
+        }
+        
+        .btn-outline-primary.active {
+            background-color: var(--btn-toggle-active);
+            border-color: var(--btn-toggle-active);
+            color: var(--btn-toggle-active-text);
+        }
+        
+        [data-theme="dark"] .btn-outline-primary:not(.active):hover {
+            background-color: rgba(102, 187, 106, 0.2);
+            color: var(--primary-light);
+        }
+        
+        /* Date picker specific styling */
+        input[type="date"] {
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            border-color: var(--input-border);
+            border-radius: 8px;
+            padding: 8px 12px;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="date"]:focus {
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+            border-color: var(--primary-color);
+        }
+        
+        [data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+        }
+        
+        /* Form helper text in dark mode */
+        [data-theme="dark"] .form-text.text-muted {
+            color: var(--text-muted) !important;
+        }
+        
+        /* Improve visibility of badge text in dark mode */
+        [data-theme="dark"] .badge {
+            font-weight: 600;
+        }
+        
+        /* Fixing button groups in dark mode */
+        [data-theme="dark"] .btn-group .btn {
+            border-color: var(--primary-light);
+        }
+        
+        /* Alert improvements */
+        .alert {
+            border-radius: 10px;
+            border-left-width: 5px;
+        }
+        
+        /* Distribution circle component */
+        .distribution-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        [data-theme="dark"] .distribution-circle {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="fas fa-apple-alt"></i>Calorie Tracker
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'entry-list' %}">
+                            <i class="fas fa-list"></i> All Entries
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'entry-create' %}">
+                            <i class="fas fa-plus-circle"></i> Add Entry
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-toggle="modal" data-target="#goalSettingModal">
+                            <i class="fas fa-bullseye"></i> Set Goals
+                        </a>
+                    </li>
+                </ul>
+                
+                <!-- Theme Switcher -->
+                <div class="theme-switch-wrapper">
+                    <span class="mr-2 text-white"><i class="fas fa-sun"></i></span>
+                    <label class="theme-switch" for="theme-switch">
+                        <input type="checkbox" id="theme-switch">
+                        <span class="slider round"></span>
+                    </label>
+                    <span class="ml-2 text-white"><i class="fas fa-moon"></i></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container content py-4">
+        <!-- Daily Goal Progress Bar - Shows at the top of every page -->
+        <div class="card mb-4 fade-in">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0"><i class="fas fa-bullseye text-primary"></i> Daily Goal: <span id="daily-goal" class="font-weight-bold">2000</span> calories</h5>
+                    </div>
+                    <div>
+                        <span class="badge badge-primary"><i class="fas fa-fire mr-1"></i> Consumed: <span id="consumed-calories">0</span></span>
+                        <span class="badge badge-secondary ml-2"><i class="fas fa-balance-scale mr-1"></i> Remaining: <span id="remaining-calories">2000</span></span>
+                    </div>
+                </div>
+                <div class="goal-progress mt-2">
+                    <div class="goal-bar" id="goal-progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Nutritional Suggestion based on daily intake -->
+        <div id="nutrition-suggestion" class="nutrition-alert mb-4" style="display: none;">
+            <div class="d-flex align-items-center">
+                <div class="mr-3">
+                    <i class="fas fa-lightbulb fa-2x text-warning"></i>
+                </div>
+                <div>
+                    <h5 class="mb-1" id="suggestion-title">Nutrition Tip</h5>
+                    <p class="mb-0" id="suggestion-text">Stay hydrated throughout the day!</p>
+                </div>
+            </div>
+        </div>
+        
+        {% block content %}{% endblock %}
+    </div>
+    
+    <!-- Goal Setting Modal -->
+    <div class="modal fade" id="goalSettingModal" tabindex="-1" role="dialog" aria-labelledby="goalSettingModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="goalSettingModalLabel"><i class="fas fa-bullseye"></i> Set Your Calorie Goals</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="goalForm">
+                        <div class="form-group">
+                            <label for="dailyCalorieGoal">Daily Calorie Goal</label>
+                            <input type="number" class="form-control" id="dailyCalorieGoal" min="500" max="5000" value="2000">
+                            <small class="form-text text-muted">Recommended daily caloric intake varies by age, gender, and activity level.</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Weight Goal</label>
+                            <div class="btn-group btn-group-toggle w-100" data-toggle="buttons">
+                                <label class="btn btn-outline-primary active">
+                                    <input type="radio" name="weightGoal" value="lose" checked> Lose Weight
+                                </label>
+                                <label class="btn btn-outline-primary">
+                                    <input type="radio" name="weightGoal" value="maintain"> Maintain
+                                </label>
+                                <label class="btn btn-outline-primary">
+                                    <input type="radio" name="weightGoal" value="gain"> Gain Weight
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="activityLevel">Activity Level</label>
+                            <select class="form-control" id="activityLevel">
+                                <option value="sedentary">Sedentary (little or no exercise)</option>
+                                <option value="light">Lightly active (light exercise 1-3 days/week)</option>
+                                <option value="moderate" selected>Moderately active (moderate exercise 3-5 days/week)</option>
+                                <option value="active">Active (hard exercise 6-7 days/week)</option>
+                                <option value="very-active">Very active (very hard exercise & physical job)</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveGoalBtn">Save Goals</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-apple-alt"></i> Calorie Tracker</h5>
+                    <p>Track your daily nutrition with ease and style.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'home' %}" class="text-white"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="{% url 'entry-list' %}" class="text-white"><i class="fas fa-list"></i> All Entries</a></li>
+                        <li><a href="{% url 'entry-create' %}" class="text-white"><i class="fas fa-plus-circle"></i> Add Entry</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Healthy Tips</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-carrot"></i> Eat plenty of vegetables</li>
+                        <li><i class="fas fa-glass-water"></i> Stay hydrated</li>
+                        <li><i class="fas fa-dumbbell"></i> Exercise regularly</li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p class="mb-0">© {% now "Y" %} Calorie Tracker. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <!-- AOS Animation Library -->
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+    </script>
+    
+    <!-- Custom JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fix for dark mode toggle - IMPROVED VERSION
+            const themeSwitch = document.getElementById('theme-switch');
+            const htmlElement = document.documentElement;
+            
+            // Check for saved theme preference or use preferred color scheme
+            const currentTheme = localStorage.getItem('theme') || 
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            
+            // Apply the theme on initial load
+            htmlElement.setAttribute('data-theme', currentTheme);
+            if (currentTheme === 'dark') {
+                themeSwitch.checked = true;
+            }
+            
+            // Handle theme switch changes with proper event listeners
+            themeSwitch.addEventListener('change', function() {
+                if (this.checked) {
+                    htmlElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    
+                    // Update any charts if they exist
+                    updateChartsForDarkMode(true);
+                } else {
+                    htmlElement.setAttribute('data-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+                    
+                    // Update any charts if they exist
+                    updateChartsForDarkMode(false);
+                }
+            });
+            
+            // Helper function to update charts when theme changes
+            function updateChartsForDarkMode(isDark) {
+                if (window.calorieChart) {
+                    const textColor = isDark ? '#ECEFF1' : '#263238';
+                    const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                    
+                    window.calorieChart.options.scales.y.ticks.color = textColor;
+                    window.calorieChart.options.scales.x.ticks.color = textColor;
+                    window.calorieChart.options.scales.y.grid.color = gridColor;
+                    window.calorieChart.update();
+                }
+            }
+            
+            // Goal setting functionality - IMPROVED VERSION
+            const saveGoalBtn = document.getElementById('saveGoalBtn');
+            if (saveGoalBtn) {
+                saveGoalBtn.addEventListener('click', function() {
+                    const calorieGoal = document.getElementById('dailyCalorieGoal').value;
+                    const weightGoal = document.querySelector('input[name="weightGoal"]:checked').value;
+                    const activityLevel = document.getElementById('activityLevel').value;
+                    
+                    // Save all goals to localStorage
+                    localStorage.setItem('calorieGoal', calorieGoal);
+                    localStorage.setItem('weightGoal', weightGoal);
+                    localStorage.setItem('activityLevel', activityLevel);
+                    
+                    // Update UI
+                    updateGoalDisplay();
+                    
+                    // Close modal
+                    $('#goalSettingModal').modal('hide');
+                    
+                    // Show success message
+                    showNutritionSuggestion('Goals Updated', 'Your new calorie goal has been set! Remember to stay consistent for best results.', 'success');
+                });
+            }
+            
+            // Initialize goal input fields with saved values
+            function initializeGoalInputs() {
+                const savedCalorieGoal = localStorage.getItem('calorieGoal');
+                const savedWeightGoal = localStorage.getItem('weightGoal');
+                const savedActivityLevel = localStorage.getItem('activityLevel');
+                
+                if (savedCalorieGoal) {
+                    document.getElementById('dailyCalorieGoal').value = savedCalorieGoal;
+                }
+                
+                if (savedWeightGoal) {
+                    document.querySelector(`input[name="weightGoal"][value="${savedWeightGoal}"]`).checked = true;
+                    document.querySelector(`input[name="weightGoal"][value="${savedWeightGoal}"]`).parentElement.classList.add('active');
+                }
+                
+                if (savedActivityLevel && document.getElementById('activityLevel')) {
+                    document.getElementById('activityLevel').value = savedActivityLevel;
+                }
+            }
+            
+            // Call initialization for goal inputs
+            initializeGoalInputs();
+            
+            // Update goal display on page load
+            updateGoalDisplay();
+            
+            // Show random nutrition suggestion
+            setTimeout(function() {
+                showRandomSuggestion();
+            }, 1500);
+        });
+        
+        // Function to update goal display - COMPLETELY REWRITTEN
+        function updateGoalDisplay() {
+            const goalElement = document.getElementById('daily-goal');
+            const consumedElement = document.getElementById('consumed-calories');
+            const remainingElement = document.getElementById('remaining-calories');
+            const progressBar = document.getElementById('goal-progress-bar');
+            
+            if (!goalElement || !consumedElement || !remainingElement || !progressBar) {
+                return; // Exit if elements don't exist
+            }
+            
+            // Get goal from localStorage or use default
+            const goal = parseInt(localStorage.getItem('calorieGoal') || '2000');
+            
+            // Calculate consumed calories - IMPROVED VERSION
+            let consumed = 0;
+            
+            // First try to get calories from the page context
+            const totalCaloriesElem = document.getElementById('actual-total-calories');
+            if (totalCaloriesElem && totalCaloriesElem.dataset.calories) {
+                consumed = parseInt(totalCaloriesElem.dataset.calories);
+            } else {
+                // Otherwise count up from badges
+                const calorieElements = document.querySelectorAll('.badge-primary');
+                if (calorieElements.length > 0) {
+                    calorieElements.forEach(el => {
+                        const match = el.textContent.match(/(\d+)\s*cal/i);
+                        if (match && match[1]) {
+                            consumed += parseInt(match[1]);
+                        }
+                    });
+                }
+            }
+            
+            // Fallback for demo purposes
+            if (consumed === 0 && window.total_calories) {
+                consumed = window.total_calories;
+            }
+            
+            // Update display with proper number formatting
+            goalElement.textContent = goal.toLocaleString();
+            consumedElement.textContent = consumed.toLocaleString();
+            
+            const remaining = Math.max(0, goal - consumed);
+            remainingElement.textContent = remaining.toLocaleString();
+            
+            // Update progress bar
+            const percentConsumed = Math.min(100, (consumed / goal) * 100);
+            progressBar.style.width = percentConsumed + '%';
+            
+            // Change progress bar color based on percentage
+            if (percentConsumed > 100) {
+                progressBar.style.background = 'linear-gradient(to right, #F44336, #D32F2F)';
+            } else if (percentConsumed > 85) {
+                progressBar.style.background = 'linear-gradient(to right, #FFA726, #F57C00)';
+            } else {
+                progressBar.style.background = 'linear-gradient(to right, #4CAF50, #8BC34A)';
+            }
+            
+            // Generate suggestion based on consumption
+            if (consumed > 0) { // Only show suggestions if we have actual consumption data
+                if (consumed > goal) {
+                    showNutritionSuggestion('High Calorie Alert', 'You\'ve exceeded your daily calorie goal. Consider adding extra exercise today.', 'danger');
+                } else if (consumed > goal * 0.85) {
+                    showNutritionSuggestion('Approaching Limit', 'You\'re close to your daily calorie goal. Choose low-calorie options for any remaining meals.', 'warning');
+                } else if (consumed < goal * 0.25) {
+                    showNutritionSuggestion('Low Calorie Intake', 'Your calorie intake is quite low. Make sure you\'re getting enough nutrients.', 'warning');
+                }
+            }
+        }
+        
+        // Function to show nutrition suggestion
+        function showNutritionSuggestion(title, text, type = 'default') {
+            const suggestionBox = document.getElementById('nutrition-suggestion');
+            if (!suggestionBox) return;
+            
+            const suggestionTitle = document.getElementById('suggestion-title');
+            const suggestionText = document.getElementById('suggestion-text');
+            
+            if (suggestionTitle && suggestionText) {
+                suggestionTitle.textContent = title;
+                suggestionText.textContent = text;
+                
+                // Apply appropriate styling
+                suggestionBox.className = 'nutrition-alert mb-4';
+                if (type === 'warning') {
+                    suggestionBox.classList.add('warning');
+                } else if (type === 'danger') {
+                    suggestionBox.classList.add('danger');
+                }
+                
+                suggestionBox.style.display = 'block';
+            }
+        }
+        
+        // Function to show random suggestion
+        function showRandomSuggestion() {
+            const suggestions = [
+                {title: 'Protein Intake', text: 'Try to include protein in every meal to help maintain muscle mass and feel fuller longer.'},
+                {title: 'Fiber Boost', text: 'Include high-fiber foods like beans, whole grains, and vegetables to improve digestion.'},
+                {title: 'Hydration Reminder', text: 'Remember to drink water throughout the day. Proper hydration supports metabolism.'},
+                {title: 'Portion Control', text: 'Using smaller plates can help control portion sizes and reduce calorie intake.'},
+                {title: 'Mindful Eating', text: 'Eat slowly and without distractions to better recognize your body\'s hunger signals.'},
+                {title: 'Color Variety', text: 'Try to eat fruits and vegetables of different colors to get a wide range of nutrients.'},
+                {title: 'Meal Planning', text: 'Planning meals ahead can help you make healthier choices and avoid impulsive eating.'},
+                {title: 'Smart Snacking', text: 'Keep healthy snacks like nuts, fruits, or yogurt on hand to avoid reaching for processed foods.'}
+            ];
+            
+            const random = Math.floor(Math.random() * suggestions.length);
+            showNutritionSuggestion(suggestions[random].title, suggestions[random].text);
+        }
+        
+        // Fix for jQuery selector extension
+        if (window.jQuery) {
+            jQuery.expr[':'].contains = function(a, i, m) {
+                return jQuery(a).text().toUpperCase()
+                    .indexOf(m[3].toUpperCase()) >= 0;
+            };
+        }
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
