@@ -112,7 +112,7 @@ The application offers a complete suite of CRUD operations for food entries, alo
 
 3. **Clone or Download the Repository**
    ```bash
-   git clone https://github.com/yourusername/calorie-tracker.git .
+   git clone https://github.com/Sohaib-Sarwar/calorie-tracker.git .
    
    # If you don't have Git, download and extract the ZIP file
    ```
